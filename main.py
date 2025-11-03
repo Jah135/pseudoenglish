@@ -1,4 +1,4 @@
-from random import choices
+from random import choices, randint
 
 def choose_random_weighted(list: dict[str, int]):
 	options = []
@@ -21,7 +21,7 @@ def choose_best(list: dict[str, int]) -> str:
 	return best
 
 def score_pattern(reference: str, pattern: str) -> int:
-	score = 0
+	score = randint(-5, 0)
 
 	max_length = min(len(reference), len(pattern))
 	min_pattern = pattern[-max_length:]
@@ -33,11 +33,13 @@ def score_pattern(reference: str, pattern: str) -> int:
 	for index in range(max_length):
 		ref_char = min_reference[index]
 		pattern_char = min_pattern[index]
+		
+		alpha = (index / max_length)
 
 		if ref_char == pattern_char:
-			score += 80
+			score += 100 * alpha
 		elif ref_char.lower() == pattern_char.lower():
-			score += 40
+			score += 40 * alpha
 
 	return score
 def determine_closest_pattern(pattern_list: dict[str, dict[str, int]], pattern: str) -> str:
@@ -79,14 +81,15 @@ def generate_pseudo_english(patterns: dict[str, dict[str, int]], seed: str, leng
 	while len(output) < length:
 		cursor = len(output)
 
-		current_pattern = output[cursor-pattern_width:cursor]
-		closest_pattern = determine_closest_pattern(patterns, current_pattern)
+		readback_pattern = output[max(cursor-pattern_width, 0):cursor]
+		closest_pattern = determine_closest_pattern(patterns, readback_pattern)
 
-		# print(f"{cursor:3}:|{current_pattern!r}|{closest_pattern!r}|")
 
 		associations = patterns[closest_pattern]
 
 		next_token = choose_random_weighted(associations)
+		
+		print(f"{cursor:3}:|R: {readback_pattern!r:9}|C: {closest_pattern!r:9}| -> {next_token!r:7} >+> {readback_pattern+next_token!r}")
 
 		output += next_token
 	
@@ -94,20 +97,22 @@ def generate_pseudo_english(patterns: dict[str, dict[str, int]], seed: str, leng
 
 INPUT_DATA = ""
 PATTERN_SIZE = 6
+READBACK_SIZE = 6
+TOKEN_SIZE = 3
 
 # with open("grant_data.txt", "r") as f:
 #   test_data += f.read()
 
-with open("whitman_leaves_of_grass.txt", "+r") as f:
+with open("whitman_data.txt", "+r") as f:
 	INPUT_DATA += f.read()
 
-pattern_associations = analyze_text(INPUT_DATA, PATTERN_SIZE, 6)
+pattern_associations = analyze_text(INPUT_DATA, PATTERN_SIZE, TOKEN_SIZE)
 
-print(f"input data length: {len(INPUT_DATA)}\npattern size: {PATTERN_SIZE}")
+print(f"Input Data Size: {len(INPUT_DATA)}\nAssociation Count: {len(pattern_associations)}\n\nPattern Size: {PATTERN_SIZE}\nReadback Size: {READBACK_SIZE}\nToken Size: {TOKEN_SIZE}\n")
 # print("pattern associations:\n", pattern_associations)
 
 while True:
-	seed = input("seed: ")
+	seed = input("Input seed: ")
 
-	output_text = generate_pseudo_english(pattern_associations, seed, 500, 4)
-	print(f"{"-" * 50}\n{output_text}\n{'-' * 50}")
+	output_text = generate_pseudo_english(pattern_associations, seed, 500, READBACK_SIZE)
+	print(f"{'-' * 50}\n{output_text}\n{'-' * 50}")
