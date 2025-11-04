@@ -1,5 +1,6 @@
 from random import choices, randint
 from intput import intput
+from os import getcwd
 
 def choose_random_weighted(list: dict[str, int]):
 	options = []
@@ -98,6 +99,8 @@ def generate_pseudo_english(patterns: dict[str, dict[str, int]], seed: str, leng
 	return output.strip()
 
 INPUT_DATA = ""
+
+print(f"Current working directory: {getcwd()}")
 
 while True:
 	try:
