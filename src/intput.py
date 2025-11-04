@@ -1,4 +1,4 @@
-def intput(prompt: str, default: int = None) -> int:
+def intput(prompt: str, default: int | None = None) -> int:
 	while True:
 		try:
 			text = input(prompt)
