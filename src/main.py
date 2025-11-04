@@ -1,4 +1,5 @@
 from random import choices, randint
+from intput import intput
 
 def choose_random_weighted(list: dict[str, int]):
 	options = []
@@ -34,7 +35,8 @@ def score_pattern(reference: str, pattern: str) -> int:
 		ref_char = min_reference[index]
 		pattern_char = min_pattern[index]
 		
-		alpha = (index / max_length)
+		# alpha = (index / max_length)
+		alpha = 1
 
 		if ref_char == pattern_char:
 			score += 100 * alpha
@@ -96,23 +98,30 @@ def generate_pseudo_english(patterns: dict[str, dict[str, int]], seed: str, leng
 	return output.strip()
 
 INPUT_DATA = ""
-PATTERN_SIZE = 6
-READBACK_SIZE = 6
-TOKEN_SIZE = 3
 
-# with open("grant_data.txt", "r") as f:
-#   test_data += f.read()
+while True:
+	try:
+		file_name = input("Target file: ")
+		with open(file_name, "+r") as f:
+			print(f"Reading file '{file_name}'...\n")
 
-with open("whitman_data.txt", "+r") as f:
-	INPUT_DATA += f.read()
+			INPUT_DATA += f.read()
+
+			break
+	except Exception:
+		print("Invalid file.")
+
+PATTERN_SIZE = intput("Pattern size (default 6): ", 6)
+READBACK_SIZE = intput("Readback size (default 6): ", 6)
+TOKEN_SIZE = intput("Token size (default 3): ", 3)
 
 pattern_associations = analyze_text(INPUT_DATA, PATTERN_SIZE, TOKEN_SIZE)
 
-print(f"Input Data Size: {len(INPUT_DATA)}\nAssociation Count: {len(pattern_associations)}\n\nPattern Size: {PATTERN_SIZE}\nReadback Size: {READBACK_SIZE}\nToken Size: {TOKEN_SIZE}\n")
-# print("pattern associations:\n", pattern_associations)
+print(f"\nInput Data Size: {len(INPUT_DATA)}\nAssociation Count: {len(pattern_associations)}\n\nPattern Size: {PATTERN_SIZE}\nReadback Size: {READBACK_SIZE}\nToken Size: {TOKEN_SIZE}\n")
 
 while True:
 	seed = input("Input seed: ")
+	count = intput("Input count: ")
 
-	output_text = generate_pseudo_english(pattern_associations, seed, 500, READBACK_SIZE)
+	output_text = generate_pseudo_english(pattern_associations, seed, count, READBACK_SIZE)
 	print(f"{'-' * 50}\n{output_text}\n{'-' * 50}")
