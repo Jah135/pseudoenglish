@@ -17,6 +17,7 @@ def choose_random(occurrences: Occurrences) -> str:
 		options.append(key)
 	
 	return choices(options, k=1)[0]
+
 def choose_best(occurrences: Occurrences) -> str:
 	best = ""
 	record = 0
@@ -27,3 +28,13 @@ def choose_best(occurrences: Occurrences) -> str:
 			record = count
 	
 	return best
+def choose_worst(occurrences: Occurrences) -> str:
+	worst = ""
+	record = 1e9
+
+	for key, count in occurrences.items():
+		if count < record:
+			worst = key
+			record = count
+	
+	return worst
