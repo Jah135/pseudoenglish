@@ -8,5 +8,5 @@ setup(
 	author='Jah135',
 	license='MIT',
 	packages=find_packages(),
-	python_requires='>=3.13',
+	python_requires='>=3.12',
 )
